@@ -29,7 +29,7 @@
   <img src="https://github.com/user-attachments/assets/ba62fef8-9edc-4f1e-a59c-555a7b9fa7ea" alt="Drowsiness Example" width="400" />
 </p>
 
-### Eye Detection
+### Eye Gaze Detection
 <p align="center">
   <img src="https://github.com/user-attachments/assets/25550026-7845-4ff7-bec4-924034a886c5" alt="Eyes Open Example" width="400" />
 </p>
@@ -42,8 +42,8 @@
 ## Models Trained and Used
 
 - **[Posture Detection](https://universe.roboflow.com/my-home-skaur/improper-sitting-av8w4-nnvf9/model/2)**  
-- **[Drowsiness Detection](https://app.roboflow.com/my-home-skaur/posture-and-drowsiness-detection-ps3zu/8)**  
-- **[Eye Detection](https://universe.roboflow.com/my-home-skaur/eye-detection-ni-gelo/model/3)**  
+- **[Drowsiness Detection](https://universe.roboflow.com/my-home-skaur/posture-and-drowsiness-detection-ps3zu/model/8)**  
+- **[Eye Gaze Detection](https://universe.roboflow.com/my-home-skaur/eye-detection-ni-gelo/model/3)**  
 
 ---
 

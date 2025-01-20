@@ -1,7 +1,8 @@
 # Computer-User-Health-Monitoring-YOLOv8
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f3b0e07c-8e77-443d-8263-dea1a5f85927" alt="Project Banner" />
+  <img src="https://github.com/user-attachments/assets/4c089be6-6c69-4c03-ba62-2048b5fe5fb1" alt="Project Banner" />
+
 </p>
 
 <p align="justify">
@@ -14,26 +15,26 @@
 
 ### Posture Detection
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/02c5b6cc-ef69-404d-9590-5566bea66d7a" alt="Good Posture Example" width="400" />
+  <img src="https://github.com/user-attachments/assets/d7775c38-9f23-4e51-a728-e539d3976968" alt="Good Posture Example" width="400" />
 </p>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/cdfe5597-8481-4fd5-b361-cec9e88b2822" alt="Another Good Posture Example" width="400" />
+  <img src="https://github.com/user-attachments/assets/fd7d7a62-95e0-407d-b982-345670c0fb7c" alt="Another Good Posture Example" width="400" />
 </p>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/eb7384a1-2682-406c-887a-032779f7a5a9" alt="Bad Posture Example" width="400" />
+  <img src="https://github.com/user-attachments/assets/7687b056-38f6-4505-b3bf-08c1cd782215" alt="Bad Posture Example" width="400" />
 </p>
 
 ### Drowsiness Detection
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/084342b8-7f4d-43fa-b1ad-8831908d6fca" alt="Drowsiness Example" width="400" />
+  <img src="https://github.com/user-attachments/assets/ba62fef8-9edc-4f1e-a59c-555a7b9fa7ea" alt="Drowsiness Example" width="400" />
 </p>
 
 ### Eye Detection
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/454f894d-b3e3-4ef2-a78c-610faa3deb17" alt="Eyes Open Example" width="400" />
+  <img src="https://github.com/user-attachments/assets/25550026-7845-4ff7-bec4-924034a886c5" alt="Eyes Open Example" width="400" />
 </p>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f0609da3-24ad-4b9d-9af1-de67e2c5fc08" alt="Eyes Closed Example" width="400" />
+  <img src="https://github.com/user-attachments/assets/3ce4e2bd-9e5f-4006-b1cd-f2f755d5fa3c" alt="Eyes Closed Example" width="400" />
 </p>
 
 ---

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Eye, Posture, and Drowsiness Detection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #2D2D2D; 
+      color: #E5E5E5; 
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 1200px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    h1 {
+      color: #F5A623;
+      margin-bottom: 40px;
+      font-weight: bold;
+    }
+    p, .description {
+      color: #B0B0B0; 
+      margin-bottom: 20px;
+    }
+    #camera-container {
+      position: relative;
+      margin-bottom: 30px;
+      width: 640px;
+      height: 480px;
+      margin: 0 auto;
+    }
+    video, canvas {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 10px;
+    }
+    .below-camera-content {
+      margin-top: 50px;
+    }
+    .instructions {
+      background-color: #333333;
+      padding: 20px;
+      border-radius: 10px;
+      color: #F5A623; 
+      margin-bottom: 30px;
+    }
+    .alert-info {
+      background-color: #444444;
+      color: #B0B0B0;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .toggle-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .toggle-container label {
+      color: #E5E5E5;
+      margin-right: 10px;
+    }
+    .modal-content {
+      background-color: #333333; 
+      color: #F5A623; 
+    }
+    .modal-footer button {
+      background-color: #F5A623;
+      color: #2D2D2D; 
+    }
+    .modal-footer button:hover {
+      background-color: #F0A000; 
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Real-Time Posture, Drowsiness, and Eye Gaze Detection</h1>
+    <p class="lead">The system will detect closed eyes, posture issues, and signs of drowsiness.</p>
+
+    <div id="camera-container">
+      <video id="camera" autoplay playsinline width="640" height="480"></video>
+      <canvas id="overlay" width="640" height="480"></canvas>
+    </div>
+
+
+    <div class="toggle-container">
+      <label for="toggle-model">Enable Posture Detection:</label>
+      <input type="checkbox" id="toggle-model">
+    </div>
+
+    <audio id="buzz-sound" src="1.mp3"></audio>
+
+    <div class="below-camera-content">
+      <div class="instructions">
+        <h4>Instructions:</h4>
+        <ul class="list-unstyled">
+          <li>Grant access to your device's camera to get started.</li>
+        </ul>
+      </div>
+
+      <div class="alert-info">
+        <p>The system will monitor for signs of drowsiness and posture issues while you interact with the camera.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="warningModalLabel">Warning</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Your eyes have been closed for more than 3 seconds. Please be aware!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const video = document.getElementById("camera");
+    const overlay = document.getElementById("overlay");
+    const ctx = overlay.getContext("2d");
+    const buzzSound = document.getElementById("buzz-sound");
+    const warningModal = new bootstrap.Modal(document.getElementById('warningModal')); 
+    const toggleModelCheckbox = document.getElementById('toggle-model'); 
+
+    const API_URL = "https://detect.roboflow.com";
+    const API_KEY = "PYrIceV6GiNlWubz2UV2"; //ROBOFLOW API KEY
+    const FIRE_MODEL_ID = "eye-detection-ni-gelo/3"; //EYE GAZE DETECTION
+    const POSTURE_MODEL_ID = "posture-and-drowsiness-detection-ps3zu/8"; //DROWSINESS DETECTION
+    const POSTURE_ALT_MODEL_ID = "improper-sitting-av8w4-nnvf9/1"; //POSTURE DETECTION
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => console.error("Error accessing the camera: ", err));
+
+    async function runDetection() {
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const tempCtx = canvas.getContext("2d");
+      tempCtx.drawImage(video, 0, 0);
+
+      canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append("file", blob);
+
+        try {
+          const fireResponse = await fetch(`${API_URL}/${FIRE_MODEL_ID}?api_key=${API_KEY}`, {
+            method: "POST",
+            body: formData,
+          });
+          const fireData = await fireResponse.json();
+
+          ctx.clearRect(0, 0, overlay.width, overlay.height);
+          fireData.predictions.forEach(prediction => {
+            const { x, y, width, height, class: label, confidence } = prediction;
+            const confidencePercentage = (confidence * 100).toFixed(2); 
+            
+            ctx.strokeStyle = "lightblue";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - width / 2, y - height / 2, width, height);
+            ctx.fillStyle = "lightblue";
+            ctx.font = "12px Arial";
+            
+            ctx.fillText(`${label} (${confidencePercentage}%)`, x - width / 2, y - height / 2 - 10);
+          });
+
+          if (toggleModelCheckbox.checked) {
+            const altPostureResponse = await fetch(`${API_URL}/${POSTURE_ALT_MODEL_ID}?api_key=${API_KEY}`, {
+              method: "POST",
+              body: formData,
+            });
+            const altPostureData = await altPostureResponse.json();
+            altPostureData.predictions.forEach(prediction => {
+              const { x, y, width, height, class: label, confidence } = prediction;
+              const confidencePercentage = (confidence * 100).toFixed(2);
+              
+              ctx.strokeStyle = "red";
+              ctx.lineWidth = 2;
+              ctx.strokeRect(x - width / 2, y - height / 2, width, height);
+              ctx.fillStyle = "red";
+              ctx.font = "12px Arial";
+              
+              ctx.fillText(`${label} (${confidencePercentage}%)`, x - width / 2, y - height / 2 - 10);
+            });
+          } else {
+            const postureResponse = await fetch(`${API_URL}/${POSTURE_MODEL_ID}?api_key=${API_KEY}`, {
+              method: "POST",
+              body: formData,
+            });
+            const postureData = await postureResponse.json();
+            postureData.predictions.forEach(prediction => {
+              const { x, y, width, height, class: label, confidence } = prediction;
+              const confidencePercentage = (confidence * 100).toFixed(2);
+              
+              ctx.strokeStyle = "yellow";
+              ctx.lineWidth = 5;
+              ctx.strokeRect(x - width / 2, y - height / 2, width, height);
+              ctx.fillStyle = "yellow";
+              ctx.font = "12px Arial";
+              
+              ctx.fillText(`${label} (${confidencePercentage}%)`, x - width / 2, y - height / 2 - 10);
+            });
+          }
+        } catch (error) {
+          console.error("Error during inference:", error);
+        }
+      }, "image/jpeg");
+    }
+
+    setInterval(runDetection, 1000);
+  </script>
+</body>
+</html>

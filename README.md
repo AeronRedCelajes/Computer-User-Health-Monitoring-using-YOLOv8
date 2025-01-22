@@ -10,6 +10,11 @@
 </p>
 
 ---
+<br></br>
+## Computer-User-Health-Monitoring-YOLOv8 Deployment
+Link: [Check it out](https://aeronredcelajes.github.io/Computer-User-Health-Monitoring-using-YOLOv8/)
+
+<br></br>
 
 ## Picture Examples
 
